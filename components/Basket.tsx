@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Trash, Plus, Minus, RefreshCw } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import type { Product } from "@/types/product";
 import CheckoutForm from "@/components/CheckOutForm";
+import { DeleteIcon } from "@/components/DeleteIcon";
+import { RefreshIcon } from "@/components/RefreshIcon";
 
 interface BasketProps {
   items: {
@@ -34,6 +36,26 @@ export default function Basket({
   setActiveTab,
 }: BasketProps) {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  // Add state to manage input values for each item
+  const [inputValues, setInputValues] = useState<Record<number, string>>({});
+  // Add state to track which inputs are focused
+  const [focusedInputs, setFocusedInputs] = useState<Record<number, boolean>>(
+    {}
+  );
+
+  // Initialize input values when items change
+  useEffect(() => {
+    const newInputValues = { ...inputValues };
+
+    items.forEach((item) => {
+      // Only set value if not focused and not already set
+      if (!focusedInputs[item.product.id]) {
+        newInputValues[item.product.id] = item.quantity.toString();
+      }
+    });
+
+    setInputValues(newInputValues);
+  }, [items]);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -51,6 +73,82 @@ export default function Basket({
     }
     // Otherwise use placeholder
     return src || "/placeholder.svg?height=80&width=80";
+  };
+
+  // Handle quantity input change
+  const handleQuantityChange = (productId: number, value: string) => {
+    setInputValues((prev) => ({
+      ...prev,
+      [productId]: value,
+    }));
+  };
+
+  // Handle input focus
+  const handleFocus = (productId: number) => {
+    // Mark this input as focused
+    setFocusedInputs((prev) => ({
+      ...prev,
+      [productId]: true,
+    }));
+
+    // Clear the input
+    setInputValues((prev) => ({
+      ...prev,
+      [productId]: "",
+    }));
+  };
+
+  // Handle input blur
+  const handleBlur = (productId: number) => {
+    // Mark this input as not focused
+    setFocusedInputs((prev) => ({
+      ...prev,
+      [productId]: false,
+    }));
+
+    const value = inputValues[productId];
+
+    // If input is empty, revert to previous quantity
+    if (value === "") {
+      const item = items.find((item) => item.product.id === productId);
+      if (item) {
+        setInputValues((prev) => ({
+          ...prev,
+          [productId]: item.quantity.toString(),
+        }));
+      }
+      return;
+    }
+
+    // Parse the numeric value
+    const numValue = parseInt(value);
+
+    // If it's 0, remove the product
+    if (numValue === 0) {
+      removeFromBasket(productId);
+      return;
+    }
+
+    // If it's a valid number greater than 0, update quantity
+    if (!isNaN(numValue) && numValue > 0) {
+      updateQuantity(productId, numValue);
+    } else {
+      // If invalid, revert to previous quantity
+      const item = items.find((item) => item.product.id === productId);
+      if (item) {
+        setInputValues((prev) => ({
+          ...prev,
+          [productId]: item.quantity.toString(),
+        }));
+      }
+    }
+  };
+
+  // Handle pressing Enter key on input
+  const handleKeyDown = (e: React.KeyboardEvent, productId: number) => {
+    if (e.key === "Enter") {
+      (e.target as HTMLInputElement).blur();
+    }
   };
 
   if (items.length === 0) {
@@ -92,8 +190,7 @@ export default function Basket({
             onClick={clearBasket}
             className="flex items-center gap-1"
           >
-            <RefreshCw className="h-4 w-4" />
-            Clear
+            <RefreshIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -133,20 +230,42 @@ export default function Basket({
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7 rounded-r-none"
+                            className="h-7 w-7 rounded-r-none cursor-pointer"
                             onClick={() =>
-                              updateQuantity(item.product.id, item.quantity - 1)
+                              updateQuantity(
+                                item.product.id,
+                                Math.max(1, item.quantity - 1)
+                              )
                             }
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
-                          <div className="h-7 px-3 flex items-center justify-center text-sm border-y">
-                            {item.quantity}
-                          </div>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={
+                              focusedInputs[item.product.id]
+                                ? inputValues[item.product.id] || ""
+                                : inputValues[item.product.id] ||
+                                  item.quantity.toString()
+                            }
+                            onChange={(e) =>
+                              handleQuantityChange(
+                                item.product.id,
+                                e.target.value
+                              )
+                            }
+                            onFocus={() => handleFocus(item.product.id)}
+                            onBlur={() => handleBlur(item.product.id)}
+                            onKeyDown={(e) => handleKeyDown(e, item.product.id)}
+                            className="h-7 w-12 border-y px-2 text-center text-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            aria-label="Quantity"
+                          />
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7 rounded-l-none"
+                            className="h-7 w-7 rounded-l-none cursor-pointer"
                             onClick={() =>
                               updateQuantity(item.product.id, item.quantity + 1)
                             }
@@ -160,7 +279,7 @@ export default function Basket({
                           onClick={() => removeFromBasket(item.product.id)}
                           className="h-7 px-2 text-destructive"
                         >
-                          <Trash className="h-4 w-4" />
+                          <DeleteIcon className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -191,7 +310,10 @@ export default function Basket({
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" onClick={() => setIsCheckingOut(true)}>
+              <Button
+                className="w-full cursor-pointer"
+                onClick={() => setIsCheckingOut(true)}
+              >
                 Proceed to Checkout
               </Button>
             </CardFooter>
