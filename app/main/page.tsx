@@ -73,8 +73,9 @@ export default function Home() {
   );
 
   return (
-    <main className="container mx-auto px-4 py-6">
-      <div className="flex items-center justify-between p-4">
+    <main className="container mx-auto px-4 h-screen flex flex-col">
+      {/* Phần header - cố định */}
+      <div className="flex items-center justify-between p-4 bg-background sticky top-0 z-10">
         <motion.div
           className="w-1/4"
           initial={{ x: "-100%", opacity: 0 }}
@@ -129,53 +130,64 @@ export default function Home() {
           </SignedIn>
         </motion.div>
       </div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
+          {/* Thanh tab - cố định */}
+          <TabsList className="grid w-full grid-cols-2 bg-accent sticky z-10">
+            <TabsTrigger
+              value="menu"
+              className="flex items-center gap-2 cursor-pointer w-full"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <span>Menu</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="basket"
+              className="flex items-center gap-2 cursor-pointer w-full "
+            >
+              <ShoppingBasket className="h-4 w-4" />
+              <span>Basket</span>
+              {totalItems > 0 && (
+                <motion.span
+                  className="ml-1 rounded-full bg-primary text-primary-foreground text-xs px-2 py-0.5"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    duration: 0.3,
+                    delay: 1.0,
+                    bounce: 0.5,
+                    type: "spring",
+                  }}
+                >
+                  {totalItems}
+                </motion.span>
+              )}
+            </TabsTrigger>
+          </TabsList>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-8">
-          <TabsTrigger
-            value="menu"
-            className="flex items-center gap-2 cursor-pointer w-full"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            <span>Menu</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="basket"
-            className="flex items-center gap-2 cursor-pointer w-full"
-          >
-            <ShoppingBasket className="h-4 w-4" />
-            <span>Basket</span>
-            {totalItems > 0 && (
-              <motion.span
-                className="ml-1 rounded-full bg-primary text-primary-foreground text-xs px-2 py-0.5"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{
-                  duration: 0.3,
-                  delay: 1.0,
-                  bounce: 0.5,
-                  type: "spring",
-                }}
-              >
-                {totalItems}
-              </motion.span>
-            )}
-          </TabsTrigger>
-        </TabsList>
+          <div className="flex-1 overflow-auto">
+            <TabsContent value="menu" className="h-full">
+              <div className="h-full flex flex-col">
+                <ProductList addToBasket={addToBasket} />
+              </div>
+            </TabsContent>
 
-        <TabsContent value="menu" className="space-y-4">
-          <ProductList addToBasket={addToBasket} />
-        </TabsContent>
-        <TabsContent value="basket">
-          <Basket
-            items={basketItems}
-            updateQuantity={updateQuantity}
-            removeFromBasket={removeFromBasket}
-            clearBasket={clearBasket}
-            setActiveTab={setActiveTab}
-          />
-        </TabsContent>
-      </Tabs>
+            <TabsContent value="basket" className="h-full">
+              <Basket
+                items={basketItems}
+                updateQuantity={updateQuantity}
+                removeFromBasket={removeFromBasket}
+                clearBasket={clearBasket}
+                setActiveTab={setActiveTab}
+              />
+            </TabsContent>
+          </div>
+        </Tabs>
+      </div>
     </main>
   );
 }

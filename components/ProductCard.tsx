@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus, ShoppingCart } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import type { Product } from "@/types/product";
+import { CartIcon } from "@/components/ShoppingCart";
 
 interface ProductCardProps {
   product: Product;
@@ -17,18 +18,54 @@ export default function ProductCard({
   addToBasket,
 }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
+  const [inputValue, setInputValue] = useState("1");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const incrementQuantity = () => {
-    setQuantity((prev) => prev + 1);
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    setInputValue(newQuantity.toString());
   };
 
   const decrementQuantity = () => {
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    const newQuantity = quantity > 1 ? quantity - 1 : 1;
+    setQuantity(newQuantity);
+    setInputValue(newQuantity.toString());
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+
+    // Only update actual quantity if the value is a valid number
+    const numValue = parseInt(value);
+    if (!isNaN(numValue) && numValue > 0) {
+      setQuantity(numValue);
+    } else if (value === "") {
+      // Allow empty input but don't update quantity yet
+      setQuantity(1);
+    }
+  };
+
+  const handleFocus = () => {
+    setInputValue("");
+  };
+
+  const handleBlur = () => {
+    if (
+      inputValue === "" ||
+      isNaN(parseInt(inputValue)) ||
+      parseInt(inputValue) <= 0
+    ) {
+      setInputValue("1");
+      setQuantity(1);
+    }
   };
 
   const handleAddToBasket = () => {
     addToBasket(product, quantity);
-    setQuantity(1); // Reset quantity after adding to basket
+    setQuantity(1);
+    setInputValue("1");
   };
 
   // Function to handle image URLs safely
@@ -42,7 +79,7 @@ export default function ProductCard({
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative h-40 w-full">
         <Image
           src={getImageUrl(product.image) || "/placeholder.svg"}
@@ -52,7 +89,7 @@ export default function ProductCard({
           unoptimized={product.image.startsWith("http")}
         />
       </div>
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-grow">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-lg">{product.name}</h3>
           <span className="font-bold">${product.price.toFixed(2)}</span>
@@ -64,32 +101,40 @@ export default function ProductCard({
           {product.category}
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0 flex flex-col gap-2">
+      <CardFooter className="p-4 pt-0 mt-auto">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 rounded-r-none"
+              className="h-8 w-8 rounded-r-none cursor-pointer"
               onClick={decrementQuantity}
             >
               <Minus className="h-4 w-4" />
             </Button>
-            <div className="h-8 px-3 flex items-center justify-center border-y">
-              {quantity}
-            </div>
+            <input
+              ref={inputRef}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={inputValue}
+              onChange={handleQuantityChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              className="h-8 w-12 border-y px-2 text-center focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              aria-label="Quantity"
+            />
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 rounded-l-none"
+              className="h-8 w-8 rounded-l-none cursor-pointer"
               onClick={incrementQuantity}
             >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
-          <Button onClick={handleAddToBasket} className="ml-2">
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Add
+          <Button onClick={handleAddToBasket} className="ml-2 cursor-pointer">
+            <CartIcon className="h-4 w-4 mr-2" />
           </Button>
         </div>
       </CardFooter>
