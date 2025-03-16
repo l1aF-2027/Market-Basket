@@ -1,7 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,64 +16,80 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { MoreHorizontal, Search, Edit, Trash, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react"
-import type { Product } from "@/types/product"
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  MoreHorizontal,
+  Search,
+  Edit,
+  Trash,
+  ChevronLeft,
+  ChevronRight,
+  ImageIcon,
+} from "lucide-react";
+import type { Product } from "@/types/product";
 
 interface ProductTableProps {
-  products: Product[]
-  isLoading: boolean
-  onEdit: (product: Product) => void
-  onDelete: (id: number) => void
+  products: Product[];
+  isLoading: boolean;
+  onEdit: (product: Product) => void;
+  onDelete: (id: number) => void;
 }
 
-export default function ProductTable({ products, isLoading, onEdit, onDelete }: ProductTableProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({})
-  const itemsPerPage = 8
+export default function ProductTable({
+  products,
+  isLoading,
+  onEdit,
+  onDelete,
+}: ProductTableProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const itemsPerPage = 8;
 
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage)
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   const handleImageError = (productId: number) => {
     setImageErrors((prev) => ({
       ...prev,
       [productId]: true,
-    }))
-  }
+    }));
+  };
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="space-y-4 overflow-clip">
+    <div className="space-y-4 ">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4 text-muted-foreground" />
@@ -100,14 +123,17 @@ export default function ProductTable({ products, isLoading, onEdit, onDelete }: 
               paginatedProducts.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
-                    <div className="relative h-10 w-10 bg-muted rounded-md overflow-hidden">
+                    <div className="relative h-10 w-10 bg-muted rounded-md ">
                       {imageErrors[product.id] ? (
                         <div className="flex h-full w-full items-center justify-center">
                           <ImageIcon className="h-5 w-5 text-muted-foreground" />
                         </div>
                       ) : (
                         <img
-                          src={product.image || "/placeholder.svg?height=40&width=40"}
+                          src={
+                            product.image ||
+                            "/placeholder.svg?height=40&width=40"
+                          }
                           alt={product.name}
                           className="h-full w-full object-cover"
                           onError={() => handleImageError(product.id)}
@@ -151,18 +177,27 @@ export default function ProductTable({ products, isLoading, onEdit, onDelete }: 
       </div>
       {totalPages > 1 && (
         <div className="flex items-center justify-end space-x-2">
-          <Button variant="outline" size="sm" onClick={handlePrevPage} disabled={currentPage === 1}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div className="text-sm text-muted-foreground">
             {currentPage} of {totalPages}
           </div>
-          <Button variant="outline" size="sm" onClick={handleNextPage} disabled={currentPage === totalPages}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       )}
     </div>
-  )
+  );
 }
-

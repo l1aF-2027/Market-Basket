@@ -19,7 +19,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 h-screen overflow-hidden">
+    <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
       <AdminDashboard />
     </div>
   );

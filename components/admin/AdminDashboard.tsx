@@ -131,7 +131,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col">
+    <div className="h-screen flex flex-col sticky">
       <div className="border-b">
         <div className="flex h-16 items-center px-4">
           <h1 className="text-lg font-semibold">Admin Dashboard</h1>
