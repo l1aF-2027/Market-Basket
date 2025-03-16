@@ -16,6 +16,7 @@ import type { Product } from "@/types/product";
 import CheckoutForm from "@/components/CheckOutForm";
 import { DeleteIcon } from "@/components/DeleteIcon";
 import { RefreshIcon } from "@/components/RefreshIcon";
+import { motion } from "framer-motion";
 
 interface BasketProps {
   items: {
@@ -151,9 +152,54 @@ export default function Basket({
     }
   };
 
+  // Animation variants for containers
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  // Animation variants for card items
+  const cardVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 12,
+      },
+    },
+  };
+
+  // Animation variants for summary card
+  const summaryVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 12,
+        delay: 0.3,
+      },
+    },
+  };
+
   if (items.length === 0) {
     return (
-      <div className="text-center py-12">
+      <motion.div
+        className="text-center py-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 12 }}
+      >
         <h2 className="text-2xl font-semibold mb-4">Your basket is empty</h2>
         <p className="text-muted-foreground mb-6">
           Add some items from the menu to get started.
@@ -161,27 +207,38 @@ export default function Basket({
         <Button variant="outline" onClick={() => setActiveTab("menu")}>
           Browse Menu
         </Button>
-      </div>
+      </motion.div>
     );
   }
 
   if (isCheckingOut) {
     return (
-      <CheckoutForm
-        items={items}
-        subtotal={subtotal}
-        tax={tax}
-        total={total}
-        onCancel={() => setIsCheckingOut(false)}
-        onComplete={clearBasket}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 12 }}
+      >
+        <CheckoutForm
+          items={items}
+          subtotal={subtotal}
+          tax={tax}
+          total={total}
+          onCancel={() => setIsCheckingOut(false)}
+          onComplete={clearBasket}
+        />
+      </motion.div>
     );
   }
 
   return (
     <div className="h-full flex flex-col">
       {/* Phần header cố định */}
-      <div className="sticky top-0 z-50 bg-background">
+      <motion.div
+        className="sticky top-0 z-50 bg-background"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 12 }}
+      >
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Your Basket</h2>
           <Button
@@ -193,131 +250,150 @@ export default function Basket({
             <RefreshIcon className="h-4 w-4" />
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Phần nội dung scrollable - container riêng */}
       <div className="flex-1 overflow-auto container mx-auto px-4 py-4">
-        <div className="space-y-6">
+        <motion.div
+          className="space-y-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <div className="space-y-4">
             {items.map((item) => (
-              <Card key={item.product.id}>
-                <CardContent className="p-4">
-                  <div className="flex gap-4">
-                    <div className="relative h-20 w-20 flex-shrink-0">
-                      <Image
-                        src={
-                          getImageUrl(item.product.image) || "/placeholder.svg"
-                        }
-                        alt={item.product.name}
-                        fill
-                        className="object-cover rounded-md"
-                        unoptimized={item.product.image.startsWith("http")}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between">
-                        <h3 className="font-medium">{item.product.name}</h3>
-                        <p className="font-semibold">
-                          ${(item.product.price * item.quantity).toFixed(2)}
-                        </p>
+              <motion.div key={item.product.id} variants={cardVariants}>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex gap-4">
+                      <div className="relative h-20 w-20 flex-shrink-0">
+                        <Image
+                          src={
+                            getImageUrl(item.product.image) ||
+                            "/placeholder.svg"
+                          }
+                          alt={item.product.name}
+                          fill
+                          className="object-cover rounded-md"
+                          unoptimized={item.product.image.startsWith("http")}
+                        />
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        ${item.product.price.toFixed(2)} each
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex justify-between">
+                          <h3 className="font-medium">{item.product.name}</h3>
+                          <p className="font-semibold">
+                            ${(item.product.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          ${item.product.price.toFixed(2)} each
+                        </p>
 
-                      <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center">
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-7 w-7 rounded-r-none cursor-pointer"
+                              onClick={() =>
+                                updateQuantity(
+                                  item.product.id,
+                                  Math.max(1, item.quantity - 1)
+                                )
+                              }
+                            >
+                              <Minus className="h-3 w-3" />
+                            </Button>
+                            <input
+                              type="number"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={
+                                focusedInputs[item.product.id]
+                                  ? inputValues[item.product.id] || ""
+                                  : inputValues[item.product.id] ||
+                                    item.quantity.toString()
+                              }
+                              onChange={(e) =>
+                                handleQuantityChange(
+                                  item.product.id,
+                                  e.target.value
+                                )
+                              }
+                              onFocus={() => handleFocus(item.product.id)}
+                              onBlur={() => handleBlur(item.product.id)}
+                              onKeyDown={(e) =>
+                                handleKeyDown(e, item.product.id)
+                              }
+                              className="h-7 w-12 border-y px-2 text-center text-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              aria-label="Quantity"
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-7 w-7 rounded-l-none cursor-pointer"
+                              onClick={() =>
+                                updateQuantity(
+                                  item.product.id,
+                                  item.quantity + 1
+                                )
+                              }
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          </div>
                           <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-7 w-7 rounded-r-none cursor-pointer"
-                            onClick={() =>
-                              updateQuantity(
-                                item.product.id,
-                                Math.max(1, item.quantity - 1)
-                              )
-                            }
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeFromBasket(item.product.id)}
+                            className="h-7 px-2 text-destructive"
                           >
-                            <Minus className="h-3 w-3" />
-                          </Button>
-                          <input
-                            type="number"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={
-                              focusedInputs[item.product.id]
-                                ? inputValues[item.product.id] || ""
-                                : inputValues[item.product.id] ||
-                                  item.quantity.toString()
-                            }
-                            onChange={(e) =>
-                              handleQuantityChange(
-                                item.product.id,
-                                e.target.value
-                              )
-                            }
-                            onFocus={() => handleFocus(item.product.id)}
-                            onBlur={() => handleBlur(item.product.id)}
-                            onKeyDown={(e) => handleKeyDown(e, item.product.id)}
-                            className="h-7 w-12 border-y px-2 text-center text-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            aria-label="Quantity"
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-7 w-7 rounded-l-none cursor-pointer"
-                            onClick={() =>
-                              updateQuantity(item.product.id, item.quantity + 1)
-                            }
-                          >
-                            <Plus className="h-3 w-3" />
+                            <DeleteIcon className="h-4 w-4" />
                           </Button>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFromBasket(item.product.id)}
-                          className="h-7 px-2 text-destructive"
-                        >
-                          <DeleteIcon className="h-4 w-4" />
-                        </Button>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
         <div className="mt-4">
-          <Card className="px-4 py-4">
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax (8%)</span>
-                <span>${tax.toFixed(2)}</span>
-              </div>
-              <Separator className="my-2" />
-              <div className="flex justify-between font-bold">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="w-full cursor-pointer"
-                onClick={() => setIsCheckingOut(true)}
-              >
-                Proceed to Checkout
-              </Button>
-            </CardFooter>
-          </Card>
+          <motion.div
+            variants={summaryVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <Card className="px-4 py-4">
+              <CardHeader>
+                <CardTitle>Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Tax (8%)</span>
+                  <span>${tax.toFixed(2)}</span>
+                </div>
+                <Separator className="my-2" />
+                <div className="flex justify-between font-bold">
+                  <span>Total</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  className="w-full cursor-pointer"
+                  onClick={() => setIsCheckingOut(true)}
+                >
+                  Proceed to Checkout
+                </Button>
+              </CardFooter>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </div>
