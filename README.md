@@ -75,7 +75,7 @@ Make sure these environment variables are correctly configured for the system to
 
 - Visit the URL: `http://localhost:3000` (or the configured address) to start experiencing the Market Basket website.
 - Sign up and log in via Clerk to access personalized features.
-- Interact with the Market Basket through the `/main` for shopping, the '/admin' for managing and analysis. (**Note:** change Metadata.public of admin user to {"role": "admin"})
+- Interact with the Market Basket through the `/main` for shopping, the `/admin` for managing and analysis. (**Note:** change Metadata.public of admin user to `{"role": "admin"}`)
 
 ## Contributions
 
