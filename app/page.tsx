@@ -2,49 +2,38 @@
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import LoginSection from "@/components/LoginSection";
-import ExampleChat from "@/components/ExampleChat";
 
 export default function Home() {
   return (
-    <main className="container mx-auto justify-between px-4 py-8">
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 200,
-          damping: 10,
-          duration: 0.1,
-        }}
-      >
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex justify-center items-center">
         <Header />
-      </motion.div>
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-10 ">
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-10">
+        {/* Phần Login Section - Căn sát phải trong container */}
         <motion.div
-          className="col-span-10 md:col-span-4"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 200,
-            damping: 10,
-            duration: 0.1,
-          }}
-        >
-          <LoginSection />
-        </motion.div>
-        <motion.div
-          className="col-span-10 md:col-span-6"
+          className="lg:col-span-5 flex justify-end"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 200,
-            damping: 10,
-            duration: 0.1,
-          }}
+          transition={{ type: "spring", stiffness: 200, damping: 10 }}
         >
-          <ExampleChat />
+          <div className="w-full max-w-md border-r lg:pl-8">
+            <LoginSection />
+          </div>
+        </motion.div>
+        {/* Phần hình ảnh bên trái */}
+        <motion.div
+          className="lg:col-span-5 flex justify-start items-center"
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 10 }}
+        >
+          <img
+            src="./demo.gif"
+            alt="Web Demo"
+            className="w-full max-w-xl object-cover aspect-[16/9] "
+          />
         </motion.div>
       </div>
     </main>

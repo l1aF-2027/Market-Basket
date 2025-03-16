@@ -5,6 +5,7 @@ const publicRoutes = createRouteMatcher([
   "/",
   "/signin(.*)", // Use pattern matching for all signin routes
   "/signup(.*)", // Use pattern matching for all signup routes
+  "/(.*)",
   // other public routes
 ]);
 export const config = {

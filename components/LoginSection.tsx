@@ -20,7 +20,7 @@ useEffect(() => {
 }, [user, isLoaded, router]);
   return (
     <div className="">
-      <SignIn routing="path" signUpUrl="/signUp" />
+      <SignIn routing="hash" signUpUrl="/signUp" />
     </div>
   );
 }

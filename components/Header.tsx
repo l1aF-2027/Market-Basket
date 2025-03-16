@@ -1,18 +1,34 @@
 "use client";
+import { motion } from "framer-motion";
+
 export default function Header() {
   return (
     <a href="#" className="flex items-center">
-      <img
-        src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Comet.png"
-        alt="Comet"
-        width="60"
-        height="60"
-        className="transform -translate-y-2"
-      />
-      <img
-        src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=50&pause=1000&color=000000&center=true&vCenter=true&width=1500&height=70&lines=Hi%2C+I'm+Comet+-+an+AI+Assistant+using+Gemini+API"
-        alt="Typing SVG"
-      />
+      <motion.div
+        className="flex items-center gap-2"
+        initial={{ x: "100%" }}
+        animate={{ x: "0%" }}
+        transition={{ duration: 1.0, ease: "easeInOut" }}
+      >
+        <motion.img
+          src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png"
+          alt="Shopping Cart"
+          width="50"
+          height="50"
+          className="inline-block"
+          initial={{ rotate: 0 }}
+          animate={{ rotate: [0, 10, -10, 0] }}
+          transition={{ duration: 1.0, ease: "easeInOut" }}
+        />
+        <motion.h1
+          className="text-4xl font-bold"
+          initial={{ x: -10, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 1.0, ease: "easeInOut" }}
+        >
+          Market Basket
+        </motion.h1>
+      </motion.div>
     </a>
   );
 }
