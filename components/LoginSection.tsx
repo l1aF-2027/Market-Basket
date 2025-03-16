@@ -7,19 +7,20 @@ export default function LoginSection() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
-    if (isLoaded && user) {
-      const userRole = user.publicMetadata?.role;
-      if (userRole === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/main");
-      }
+useEffect(() => {
+  if (isLoaded && user) {
+
+    const userRole = user.publicMetadata?.role;
+    if (userRole === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/main");
     }
-  }, [user, isLoaded, router]);
+  }
+}, [user, isLoaded, router]);
   return (
     <div className="">
-      <SignIn routing="hash" signUpForceRedirectUrl="/signUp" />
+      <SignIn routing="hash" signUpUrl="/signUp" />
     </div>
   );
 }
