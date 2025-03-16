@@ -52,11 +52,12 @@ Market Basket is a demo e-commerce website designed to provide a seamless, secur
    DATABASE_URL="postgresql://user:password@host:port/dbname"
    ```
 4. **Add Database:**
+   
    Open terminal in the directory `PostgreSQL\17\bin` and enter the command:
    ```bash
     .\psql YOUR_DATABASE_URL
    ```
-   Copy all the queries and paste into the terminal.
+   Copy all the queries in `database.sql` and paste into the terminal and enter.
    
 6. **Run the Project:**
 
