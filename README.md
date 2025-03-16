@@ -16,7 +16,7 @@ Market Basket is a demo e-commerce website designed to provide a seamless, secur
 - **Reliable Data Management:** Uses Prisma and Neon to manage and store data efficiently, ensuring scalability and reliability.  
 - **Intuitive User Interface:** Designed for ease of use, providing a smooth shopping experience for customers.  
 - **Admin Dashboard & Sales Analytics:** Allows administrators to track sales performance through interactive visual charts, making it easier to monitor trends and make data-driven decisions.
-- 
+  
 ## Technologies Used
 
 - **[Prisma](https://www.prisma.io/):** A powerful ORM that facilitates easy and efficient interaction with the database.
