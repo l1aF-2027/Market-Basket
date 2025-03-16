@@ -6,14 +6,10 @@ export async function GET() {
     // Get the 5 most recent purchases with their details
     const recentPurchases = await prisma.purchase.findMany({
       take: 5,
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" }, // Lấy 5 đơn hàng mới nhất
       include: {
         purchaseDetails: {
-          include: {
-            product: true,
-          },
+          include: { product: true },
         },
       },
     });
