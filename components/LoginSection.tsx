@@ -3,43 +3,30 @@ import { SignIn, useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginSection() {
+// Separate component for handling redirects
+function RedirectHandler() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    // Kiểm tra hash trong URL để xử lý sau khi đăng nhập
-    if (typeof window !== "undefined") {
-      if (window.location.hash === "#/sso-callback" && isLoaded && user) {
-        const userRole = user.publicMetadata?.role;
-        if (userRole === "admin") {
-          window.location.href = "/admin";
-        } else {
-          window.location.href = "/main";
-        }
+    if (isLoaded && user) {
+      const userRole = user.publicMetadata?.role;
+      if (userRole === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/main");
       }
     }
   }, [user, isLoaded, router]);
 
-  // Kiểm tra user đã đăng nhập chưa
-  useEffect(() => {
-    if (isLoaded && user) {
-      const userRole = user.publicMetadata?.role;
-      if (userRole === "admin") {
-        window.location.href = "/admin";
-      } else {
-        window.location.href = "/main";
-      }
-    }
-  }, [user, isLoaded]);
+  return null; // This component doesn't render anything
+}
 
+export default function LoginSection() {
   return (
     <div className="">
-      <SignIn
-        routing="hash"
-        signUpUrl="/signUp"
-        redirectUrl={window.location.origin}
-      />
+      <RedirectHandler />
+      <SignIn routing="hash" signUpUrl="/signUp" redirectUrl="/main" />
     </div>
   );
 }
