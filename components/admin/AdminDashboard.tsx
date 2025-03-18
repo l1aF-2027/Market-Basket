@@ -143,9 +143,15 @@ export default function AdminDashboard() {
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="products">Products</TabsTrigger>
-            <TabsTrigger value="add">Add Product</TabsTrigger>
+            <TabsTrigger value="overview" className="cursor-pointer">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="products" className="cursor-pointer">
+              Products
+            </TabsTrigger>
+            <TabsTrigger value="add" className="cursor-pointer">
+              Add Product
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">

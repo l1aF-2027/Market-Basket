@@ -147,23 +147,27 @@ export default function ProductTable({
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
+                        <Button
+                          variant="ghost"
+                          className="h-8 w-8 p-0 cursor-pointer"
+                        >
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onEdit(product)}>
+                        <DropdownMenuItem
+                          onClick={() => onEdit(product)}
+                          className="cursor-pointer "
+                        >
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => onDelete(product.id)}
-                          className="text-destructive focus:text-destructive"
+                          className="text-destructive focus:text-destructive cursor-pointer"
                         >
-                          <Trash className="mr-2 h-4 w-4" />
+                          <Trash className="mr-2 h-4 w-4 text-red" />
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

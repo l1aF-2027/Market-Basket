@@ -78,13 +78,19 @@ export default function SalesChart() {
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle>Sales Overview</CardTitle>
         <Select value={period} onValueChange={setPeriod}>
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder="Select period" />
+          <SelectTrigger className="w-[120px] cursor-pointer">
+            <SelectValue  placeholder="Select period" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="week">Last Week</SelectItem>
-            <SelectItem value="month">Last Month</SelectItem>
-            <SelectItem value="year">Last Year</SelectItem>
+          <SelectContent >
+            <SelectItem value="week" className="cursor-pointer">
+              Last Week
+            </SelectItem>
+            <SelectItem value="month" className="cursor-pointer">
+              Last Month
+            </SelectItem>
+            <SelectItem value="year" className="cursor-pointer">
+              Last Year
+            </SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>

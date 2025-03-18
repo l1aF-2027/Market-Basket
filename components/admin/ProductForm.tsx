@@ -93,7 +93,7 @@ export default function ProductForm({
   };
 
   return (
-    <Card >
+    <Card>
       <CardHeader>
         <CardTitle>{product ? "Edit Product" : "Add New Product"}</CardTitle>
       </CardHeader>
@@ -216,11 +216,16 @@ export default function ProductForm({
         </CardContent>
         <CardFooter className="flex justify-between">
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
+              className="cursor-pointer "
+            >
               Cancel
             </Button>
           )}
-          <Button type="submit">
+          <Button type="submit" className="cursor-pointer ">
             {product ? "Update Product" : "Create Product"}
           </Button>
         </CardFooter>
