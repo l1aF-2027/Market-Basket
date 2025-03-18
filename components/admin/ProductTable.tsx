@@ -46,7 +46,7 @@ export default function ProductTable({
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
 
   const filteredProducts = products.filter(
     (product) =>
