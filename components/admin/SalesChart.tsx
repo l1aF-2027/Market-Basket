@@ -70,11 +70,11 @@ export default function SalesChart() {
   };
 
   const formatCurrency = (value: number) => {
-    return `$${value.toFixed(2)}`;
+    return `$${value.toFixed(0)}`;
   };
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle>Sales Overview</CardTitle>
         <Select value={period} onValueChange={setPeriod}>
@@ -88,9 +88,9 @@ export default function SalesChart() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="flex justify-center items-center min-w-full">
+      <CardContent className="p-0">
         {isLoading ? (
-          <div className="max-h-[300px] flex items-center justify-center">
+          <div className="h-[300px] flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : data.length === 0 ? (
@@ -98,66 +98,64 @@ export default function SalesChart() {
             No sales data available for the selected period
           </div>
         ) : (
-          <div className="flex justify-center w-full">
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart
-                data={data}
-                margin={{ top: 10, right: 10, left: 10, bottom: 0 }} // Giảm margin
-              >
-                <defs>
-                  <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={formatDate}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis
-                  yAxisId="left"
-                  tickFormatter={formatCurrency}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  tick={{ fontSize: 12 }}
-                />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip
-                  formatter={(value, name) =>
-                    name === "sales" ? formatCurrency(value as number) : value
-                  }
-                  labelFormatter={formatDate}
-                />
-                <Legend />
-                <Area
-                  type="monotone"
-                  dataKey="sales"
-                  stroke="#8884d8"
-                  fillOpacity={1}
-                  fill="url(#colorSales)"
-                  yAxisId="left"
-                  name="Sales ($)"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="orders"
-                  stroke="#82ca9d"
-                  fillOpacity={1}
-                  fill="url(#colorOrders)"
-                  yAxisId="right"
-                  name="Orders"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart
+              data={data}
+              margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="date"
+                tickFormatter={formatDate}
+                tick={{ fontSize: 12 }}
+              />
+              <YAxis
+                yAxisId="left"
+                tickFormatter={formatCurrency}
+                tick={{ fontSize: 12 }}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tick={{ fontSize: 12 }}
+              />
+              <CartesianGrid strokeDasharray="3 3" />
+              <Tooltip
+                formatter={(value, name) =>
+                  name === "sales" ? formatCurrency(value as number) : value
+                }
+                labelFormatter={formatDate}
+              />
+              <Legend />
+              <Area
+                type="monotone"
+                dataKey="sales"
+                stroke="#8884d8"
+                fillOpacity={1}
+                fill="url(#colorSales)"
+                yAxisId="left"
+                name="Sales ($)"
+              />
+              <Area
+                type="monotone"
+                dataKey="orders"
+                stroke="#82ca9d"
+                fillOpacity={1}
+                fill="url(#colorOrders)"
+                yAxisId="right"
+                name="Orders"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         )}
       </CardContent>
     </Card>
