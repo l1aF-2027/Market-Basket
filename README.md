@@ -1,4 +1,5 @@
-![(pngconverter app)](https://github.com/user-attachments/assets/ea41ac64-3dae-47c1-8c1a-acf6643d1acc)
+# <img src="https://github.com/user-attachments/assets/149fcf5f-b2f1-4a8b-9085-dd5ed296170d" width="30" height="30"> Market Basket
+
 
 Market Basket is a demo e-commerce website that applies the Apriori algorithm for Data Mining to suggest products that customers may want to buy.
 
