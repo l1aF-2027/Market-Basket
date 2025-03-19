@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import type { Product } from "@/types/product";
 import { fetchProducts } from "@/lib/product-service";
 import { SignedIn, UserButton } from "@clerk/nextjs";
+import Detail from "@/components/admin/Detail";
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -146,6 +147,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="overview" className="cursor-pointer">
               Overview
             </TabsTrigger>
+            <TabsTrigger value="detail" className="cursor-pointer">
+              Detail
+            </TabsTrigger>
             <TabsTrigger value="products" className="cursor-pointer">
               Products
             </TabsTrigger>
@@ -225,6 +229,9 @@ export default function AdminDashboard() {
                 <RecentPurchases />
               </div>
             </div>
+          </TabsContent>
+          <TabsContent value="detail">
+            <Detail />
           </TabsContent>
           <TabsContent value="products" className="space-y-4">
             <ProductTable
