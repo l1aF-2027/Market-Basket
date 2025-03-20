@@ -10,10 +10,21 @@ export default function Home() {
         <Header />
       </div>
 
-      <div className="mt-12 grid grid-cols-1 lg:grid-cols-10 md:flex md:flex-col-reverse">
-        {/* Phần hình ảnh (sẽ hiển thị trên cùng ở màn hình md) */}
+      <div className="mt-12 grid grid-cols-1 lg:grid-cols-10">
+        {/* Phần Login Section - Căn sát phải trong container */}
         <motion.div
-          className="lg:col-span-5 flex justify-start items-center md:justify-center md:items-center"
+          className="lg:col-span-5 flex justify-end md:h-screen"
+          initial={{ x: 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 10 }}
+        >
+          <div className="lg:pl-8 ">
+            <LoginSection />
+          </div>
+        </motion.div>
+        {/* Phần hình ảnh bên trái */}
+        <motion.div
+          className="lg:col-span-5 flex justify-start items-center lg:pl-8 pt-10 hidden lg:block"
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 10 }}
@@ -23,18 +34,6 @@ export default function Home() {
             alt="Web Demo"
             className="w-full max-w-xl object-cover aspect-[16/9] "
           />
-        </motion.div>
-
-        {/* Phần Login Section */}
-        <motion.div
-          className="lg:col-span-5 flex justify-end md:justify-center"
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 10 }}
-        >
-          <div className="w-full max-w-md border-r lg:pl-8">
-            <LoginSection />
-          </div>
         </motion.div>
       </div>
     </main>
