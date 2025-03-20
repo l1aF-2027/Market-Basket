@@ -49,6 +49,16 @@ interface DetailedStats {
     name: string;
     value: number;
   }[];
+  highestRevenueDay: {
+    date: string;
+    totalRevenue: number;
+    totalItems: number;
+  } | null;
+  mostItemsSoldDay: {
+    date: string;
+    totalRevenue: number;
+    totalItems: number;
+  } | null;
 }
 
 // Colors for pie charts
@@ -141,6 +151,21 @@ export default function Detail() {
       totalValue,
     }));
   };
+    const calculateAverages = (stats: DetailedStats) => {
+      if (!stats.highestRevenueDay || !stats.mostItemsSoldDay)
+        return { avgRevenue: 0, avgItems: 0 };
+
+      const days =
+        Math.ceil(
+          (new Date(endDate!).getTime() - new Date(startDate!).getTime()) /
+            (1000 * 3600 * 24)
+        ) || 1;
+
+      return {
+        avgRevenue: stats.totalRevenue / days,
+        avgItems: stats.totalItemsSold / days,
+      };
+    };
 
   return (
     <div className="space-y-6">
@@ -348,6 +373,118 @@ export default function Detail() {
                         <Legend />
                       </PieChart>
                     </ResponsiveContainer>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle>
+                  Peak Revenue Day
+                  <span className="text-xs ml-2 text-muted-foreground font-normal">
+                    (Highest single day revenue)
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {stats.highestRevenueDay ? (
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Date</span>
+                      <span className="font-medium">
+                        {format(
+                          new Date(stats.highestRevenueDay.date),
+                          "MMM d, yyyy"
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Revenue</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">
+                          ${stats.highestRevenueDay.totalRevenue.toFixed(2)}
+                        </span>
+                        {stats.highestRevenueDay.totalRevenue >
+                          calculateAverages(stats).avgRevenue && (
+                          <span className="text-green-500 text-xs">
+                            ↑{" "}
+                            {(
+                              stats.highestRevenueDay.totalRevenue /
+                              calculateAverages(stats).avgRevenue
+                            ).toFixed(1)}
+                            x average
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Items Sold</span>
+                      <span className="font-medium">
+                        {stats.highestRevenueDay.totalItems}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-muted-foreground text-center py-4">
+                    No revenue data available
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle >
+                  Best Selling Day
+                  <span className="text-xs ml-2 text-muted-foreground font-normal">
+                    (Most items sold in a day)
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {stats.mostItemsSoldDay ? (
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Date</span>
+                      <span className="font-medium">
+                        {format(
+                          new Date(stats.mostItemsSoldDay.date),
+                          "MMM d, yyyy"
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Items Sold</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">
+                          {stats.mostItemsSoldDay.totalItems}
+                        </span>
+                        {stats.mostItemsSoldDay.totalItems >
+                          calculateAverages(stats).avgItems && (
+                          <span className="text-green-500 text-xs">
+                            ↑{" "}
+                            {(
+                              stats.mostItemsSoldDay.totalItems /
+                              calculateAverages(stats).avgItems
+                            ).toFixed(1)}
+                            x average
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Revenue</span>
+                      <span className="font-medium">
+                        ${stats.mostItemsSoldDay.totalRevenue.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-muted-foreground text-center py-4">
+                    No sales data available
                   </div>
                 )}
               </CardContent>

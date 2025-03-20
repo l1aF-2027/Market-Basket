@@ -10,7 +10,6 @@ export async function GET(request: Request) {
 
     // Parse dates or use defaults (last 30 days)
     const endDate = endDateParam ? new Date(endDateParam) : new Date();
-
     const startDate = startDateParam
       ? new Date(startDateParam)
       : new Date(endDate.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -38,6 +37,82 @@ export async function GET(request: Request) {
 
     // Track product statistics
     const productStats = new Map();
+
+    // Track daily statistics
+    const dailyStatsMap = new Map<
+      string,
+      {
+        date: string;
+        totalRevenue: number;
+        totalItems: number;
+      }
+    >();
+
+    // Process each purchase
+    purchases.forEach((purchase) => {
+      const purchaseDate = purchase.createdAt.toISOString().split("T")[0];
+
+      // Initialize daily stats
+      if (!dailyStatsMap.has(purchaseDate)) {
+        dailyStatsMap.set(purchaseDate, {
+          date: purchaseDate,
+          totalRevenue: 0,
+          totalItems: 0,
+        });
+      }
+      const dailyStats = dailyStatsMap.get(purchaseDate)!;
+
+      let purchaseRevenue = 0;
+      let purchaseItems = 0;
+
+      purchase.purchaseDetails.forEach((detail) => {
+        const { product, quantity } = detail;
+        const revenue = product.price * quantity;
+
+        // Update totals
+        totalRevenue += revenue;
+        totalItemsSold += quantity;
+        purchaseRevenue += revenue;
+        purchaseItems += quantity;
+
+        // Update product statistics
+        if (!productStats.has(product.id)) {
+          productStats.set(product.id, {
+            id: product.id,
+            name: product.name,
+            category: product.category,
+            quantity: 0,
+            revenue: 0,
+            price: product.price,
+          });
+        }
+
+        const stats = productStats.get(product.id);
+        stats.quantity += quantity;
+        stats.revenue += revenue;
+      });
+
+      // Update daily stats
+      dailyStats.totalRevenue += purchaseRevenue;
+      dailyStats.totalItems += purchaseItems;
+    });
+
+    const dailyStatsArray = Array.from(dailyStatsMap.values());
+
+    // Find peak days
+    const highestRevenueDay =
+      dailyStatsArray.length > 0
+        ? dailyStatsArray.reduce((max, current) =>
+            current.totalRevenue > max.totalRevenue ? current : max
+          )
+        : null;
+
+    const mostItemsSoldDay =
+      dailyStatsArray.length > 0
+        ? dailyStatsArray.reduce((max, current) =>
+            current.totalItems > max.totalItems ? current : max
+          )
+        : null;
 
     // Process each purchase
     purchases.forEach((purchase) => {
@@ -112,11 +187,31 @@ export async function GET(request: Request) {
       totalRevenue,
       totalItemsSold,
       totalOrders: purchases.length,
-      averageOrderValue,
-      topProductsByQuantity,
-      topProductsByRevenue,
-      productDistribution,
-      categoryDistribution,
+      averageOrderValue:
+        purchases.length > 0 ? totalRevenue / purchases.length : 0,
+      topProductsByQuantity: [...productStatsArray]
+        .sort((a, b) => b.quantity - a.quantity)
+        .slice(0, 5),
+      topProductsByRevenue: [...productStatsArray]
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5),
+      productDistribution: productStatsArray.map((product) => ({
+        name: product.name,
+        value: product.quantity,
+      })),
+      categoryDistribution: Array.from(
+        new Map(
+          productStatsArray.reduce((acc, product) => {
+            acc.set(
+              product.category,
+              (acc.get(product.category) || 0) + product.quantity
+            );
+            return acc;
+          }, new Map())
+        ).entries()
+      ).map(([name, value]) => ({ name, value })),
+      highestRevenueDay,
+      mostItemsSoldDay,
     });
   } catch (error) {
     console.error("Error fetching detailed stats:", error);
