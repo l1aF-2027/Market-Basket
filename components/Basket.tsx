@@ -245,7 +245,7 @@ export default function Basket({
     },
   };
 
-  if (items.length === 0 || recommendedProducts.length === 0) {
+  if (items.length === 0 && recommendedProducts.length === 0) {
     return (
       <motion.div
         className="text-center py-12"
