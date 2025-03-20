@@ -183,6 +183,7 @@ export default function Home() {
                 removeFromBasket={removeFromBasket}
                 clearBasket={clearBasket}
                 setActiveTab={setActiveTab}
+                addToBasket={addToBasket}
               />
             </TabsContent>
           </div>

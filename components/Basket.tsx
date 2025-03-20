@@ -17,6 +17,8 @@ import CheckoutForm from "@/components/CheckOutForm";
 import { DeleteIcon } from "@/components/DeleteIcon";
 import { RefreshIcon } from "@/components/RefreshIcon";
 import { motion } from "framer-motion";
+import ProductRecommendations from "@/components/ProductReccomendation";
+import { fetchProducts } from "@/lib/product-service";
 
 interface BasketProps {
   items: {
@@ -27,6 +29,7 @@ interface BasketProps {
   removeFromBasket: (productId: number) => void;
   clearBasket: () => void;
   setActiveTab: (tab: string) => void;
+  addToBasket: (product: Product, quantity: number) => void;
 }
 
 export default function Basket({
@@ -35,15 +38,18 @@ export default function Basket({
   removeFromBasket,
   clearBasket,
   setActiveTab,
+  addToBasket,
 }: BasketProps) {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   // Add state to manage input values for each item
   const [inputValues, setInputValues] = useState<Record<number, string>>({});
   // Add state to track which inputs are focused
   const [focusedInputs, setFocusedInputs] = useState<Record<number, boolean>>(
     {}
   );
-
+  const [isLoading, setIsLoading] = useState(true);
   // Initialize input values when items change
   useEffect(() => {
     const newInputValues = { ...inputValues };
@@ -63,6 +69,54 @@ export default function Basket({
     0
   );
 
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const products = await fetchProducts();
+        setAllProducts(products);
+
+        if (items.length > 0) {
+          const response = await fetch("/api/recommendations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items }),
+          });
+
+          if (!response.ok) throw new Error("Failed to fetch recommendations");
+
+          const data = await response.json();
+          if (
+            data?.recommended_products &&
+            Array.isArray(data.recommended_products)
+          ) {
+            const recommended = data.recommended_products
+              .map((name: string) => products.find((p) => p.name === name))
+              .filter((p): p is Product => !!p)
+              .filter((p) => !items.some((item) => item.product.id === p.id))
+              .slice(0, 4);
+
+            setRecommendedProducts(recommended);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [items]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (recommendedProducts.length === 0) return null;
   const tax = subtotal * 0.08; // 8% tax rate
   const total = subtotal + tax;
 
@@ -393,6 +447,11 @@ export default function Basket({
                 </Button>
               </CardFooter>
             </Card>
+            <ProductRecommendations
+              basketItems={items}
+              addToBasket={addToBasket}
+              recommendedProducts={recommendedProducts}
+            />
           </motion.div>
         </div>
       </div>

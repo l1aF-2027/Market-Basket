@@ -150,7 +150,7 @@ export default function Detail() {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full sm:w-auto justify-start"
+                className="w-full sm:w-auto justify-start cursor-pointer"
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {startDate ? format(startDate, "PPP") : "Pick start date"}
@@ -170,7 +170,7 @@ export default function Detail() {
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full sm:w-auto justify-start"
+                className="w-full sm:w-auto justify-start cursor-pointer"
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {endDate ? format(endDate, "PPP") : "Pick end date"}
@@ -187,7 +187,7 @@ export default function Detail() {
           </Popover>
         </div>
 
-        <Button onClick={handleApplyDateRange} disabled={isLoading}>
+        <Button onClick={handleApplyDateRange} disabled={isLoading} className="cursor-pointer">
           {isLoading ? (
             <>
               <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -358,8 +358,8 @@ export default function Detail() {
             <CardContent>
               <Tabs defaultValue="quantity">
                 <TabsList className="mb-4">
-                  <TabsTrigger value="quantity">By Quantity</TabsTrigger>
-                  <TabsTrigger value="revenue">By Revenue</TabsTrigger>
+                  <TabsTrigger value="quantity" className="cursor-pointer">By Quantity</TabsTrigger>
+                  <TabsTrigger value="revenue" className="cursor-pointer">By Revenue</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="quantity">
