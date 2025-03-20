@@ -42,9 +42,20 @@ export async function POST(request: Request) {
     }
 
     const recommendations = await response.json();
-    console.log("Received recommendations:", JSON.stringify(recommendations));
 
-    return NextResponse.json(recommendations);
+    // Log toàn bộ thông tin, nhưng chỉ trả về recommendations
+    console.log(
+      "Received recommendations:",
+      JSON.stringify(recommendations.recommended_products)
+    );
+
+    if (recommendations.logs) {
+      console.log("Recommendation Logs:\n", recommendations.logs.join("\n"));
+    }
+
+    return NextResponse.json(recommendations.recommended_products);
+
+    // return NextResponse.json(recommendations);
   } catch (error) {
     console.error("Error fetching recommendations:", error);
 

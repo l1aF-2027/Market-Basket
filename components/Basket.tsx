@@ -75,7 +75,7 @@ export default function Basket({
         const products = await fetchProducts();
         setAllProducts(products);
 
-        if (items.length > 0) {
+        if (items.length >= 0) {
           const response = await fetch("/api/recommendations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -86,10 +86,10 @@ export default function Basket({
 
           const data = await response.json();
           if (
-            data?.recommended_products &&
-            Array.isArray(data.recommended_products)
+            data &&
+            Array.isArray(data)
           ) {
-            const recommended = data.recommended_products
+            const recommended = data
               .map((name: string) => products.find((p) => p.name === name))
               .filter((p): p is Product => !!p)
               .filter((p) => !items.some((item) => item.product.id === p.id))
@@ -245,10 +245,7 @@ export default function Basket({
     },
   };
 
-  if (
-    (items.length === 0 || recommendedProducts.length === 0) &&
-    items.length !== 16
-  ) {
+  if (items.length === 0) {
     return (
       <motion.div
         className="text-center py-12"
@@ -267,9 +264,19 @@ export default function Basket({
         >
           Browse Menu
         </Button>
+
+        {/* Thêm danh sách gợi ý sản phẩm */}
+        <div className="mt-8">
+          <ProductRecommendations
+            basketItems={items}
+            addToBasket={addToBasket}
+            recommendedProducts={recommendedProducts}
+          />
+        </div>
       </motion.div>
     );
   }
+
 
   if (isCheckingOut) {
     return (
