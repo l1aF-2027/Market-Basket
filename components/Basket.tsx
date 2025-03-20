@@ -116,7 +116,6 @@ export default function Basket({
     );
   }
 
-  if (recommendedProducts.length === 0) return null;
   const tax = subtotal * 0.08; // 8% tax rate
   const total = subtotal + tax;
 
@@ -246,7 +245,7 @@ export default function Basket({
     },
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 || recommendedProducts.length === 0) {
     return (
       <motion.div
         className="text-center py-12"
@@ -258,7 +257,7 @@ export default function Basket({
         <p className="text-muted-foreground mb-6">
           Add some items from the menu to get started.
         </p>
-        <Button variant="outline" onClick={() => setActiveTab("menu")}>
+        <Button variant="outline" onClick={() => setActiveTab("menu")} className="cursor-pointer">
           Browse Menu
         </Button>
       </motion.div>
