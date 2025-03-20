@@ -69,44 +69,59 @@ export default function Basket({
     0
   );
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const products = await fetchProducts();
-        setAllProducts(products);
+useEffect(() => {
+  const loadProducts = async () => {
+    try {
+      const products = await fetchProducts();
+      setAllProducts(products);
 
-        if (items.length >= 0) {
-          const response = await fetch("/api/recommendations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items }),
-          });
+      if (items.length > 0) {
+        const response = await fetch("/api/recommendations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items }),
+        });
 
-          if (!response.ok) throw new Error("Failed to fetch recommendations");
+        if (!response.ok) throw new Error("Failed to fetch recommendations");
 
-          const data = await response.json();
-          if (
-            data &&
-            Array.isArray(data)
-          ) {
-            const recommended = data
-              .map((name: string) => products.find((p) => p.name === name))
-              .filter((p): p is Product => !!p)
-              .filter((p) => !items.some((item) => item.product.id === p.id))
-              .slice(0, 4);
+        const data = await response.json();
+        if (data && Array.isArray(data)) {
+          const recommended = data
+            .map((name: string) => products.find((p) => p.name === name))
+            .filter((p): p is Product => !!p)
+            .filter((p) => !items.some((item) => item.product.id === p.id))
+            .slice(0, 4);
 
-            setRecommendedProducts(recommended);
-          }
+          setRecommendedProducts(recommended);
         }
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  const loadTopProducts = async () => {
+    try {
+      const response = await fetch("/api/top-products");
+      if (!response.ok) throw new Error("Failed to fetch top products");
+
+      const data = await response.json();
+      setRecommendedProducts(data);
+    } catch (error) {
+      console.error("Error fetching top products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (items.length === 0) {
+    loadTopProducts();
+  } else {
     loadProducts();
-  }, [items]);
+  }
+}, [items]);
 
   if (isLoading) {
     return (
@@ -266,7 +281,7 @@ export default function Basket({
         </Button>
 
         {/* Thêm danh sách gợi ý sản phẩm */}
-        <div className="mt-8">
+        <div className="mt-8 text-left">
           <ProductRecommendations
             basketItems={items}
             addToBasket={addToBasket}
