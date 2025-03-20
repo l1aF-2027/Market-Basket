@@ -187,7 +187,11 @@ export default function Detail() {
           </Popover>
         </div>
 
-        <Button onClick={handleApplyDateRange} disabled={isLoading} className="cursor-pointer">
+        <Button
+          onClick={handleApplyDateRange}
+          disabled={isLoading}
+          className="cursor-pointer"
+        >
           {isLoading ? (
             <>
               <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -358,85 +362,93 @@ export default function Detail() {
             <CardContent>
               <Tabs defaultValue="quantity">
                 <TabsList className="mb-4">
-                  <TabsTrigger value="quantity" className="cursor-pointer">By Quantity</TabsTrigger>
-                  <TabsTrigger value="revenue" className="cursor-pointer">By Revenue</TabsTrigger>
+                  <TabsTrigger value="quantity" className="cursor-pointer">
+                    By Quantity
+                  </TabsTrigger>
+                  <TabsTrigger value="revenue" className="cursor-pointer">
+                    By Revenue
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="quantity">
                   <div className="rounded-md border">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="py-2 px-4 text-left font-medium">
-                            Product
-                          </th>
-                          <th className="py-2 px-4 text-right font-medium">
-                            Quantity
-                          </th>
-                          <th className="py-2 px-4 text-right font-medium">
-                            Revenue
-                          </th>
-                          <th className="py-2 px-4 text-right font-medium">
-                            Price
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.topProductsByQuantity.map((product) => (
-                          <tr key={product.id} className="border-b">
-                            <td className="py-2 px-4">{product.name}</td>
-                            <td className="py-2 px-4 text-right">
-                              {product.quantity}
-                            </td>
-                            <td className="py-2 px-4 text-right">
-                              ${product.revenue.toFixed(2)}
-                            </td>
-                            <td className="py-2 px-4 text-right">
-                              ${product.price.toFixed(2)}
-                            </td>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b bg-muted/50">
+                            <th className="py-2 px-4 text-left font-medium">
+                              Product
+                            </th>
+                            <th className="py-2 px-4 text-right font-medium">
+                              Quantity
+                            </th>
+                            <th className="py-2 px-4 text-right font-medium">
+                              Revenue
+                            </th>
+                            <th className="py-2 px-4 text-right font-medium">
+                              Price
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {stats.topProductsByQuantity.map((product) => (
+                            <tr key={product.id} className="border-b">
+                              <td className="py-2 px-4">{product.name}</td>
+                              <td className="py-2 px-4 text-right">
+                                {product.quantity}
+                              </td>
+                              <td className="py-2 px-4 text-right">
+                                ${product.revenue.toFixed(2)}
+                              </td>
+                              <td className="py-2 px-4 text-right">
+                                ${product.price.toFixed(2)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="revenue">
                   <div className="rounded-md border">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="py-2 px-4 text-left font-medium">
-                            Product
-                          </th>
-                          <th className="py-2 px-4 text-right font-medium">
-                            Revenue
-                          </th>
-                          <th className="py-2 px-4 text-right font-medium">
-                            Quantity
-                          </th>
-                          <th className="py-2 px-4 text-right font-medium">
-                            Price
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.topProductsByRevenue.map((product) => (
-                          <tr key={product.id} className="border-b">
-                            <td className="py-2 px-4">{product.name}</td>
-                            <td className="py-2 px-4 text-right">
-                              ${product.revenue.toFixed(2)}
-                            </td>
-                            <td className="py-2 px-4 text-right">
-                              {product.quantity}
-                            </td>
-                            <td className="py-2 px-4 text-right">
-                              ${product.price.toFixed(2)}
-                            </td>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b bg-muted/50">
+                            <th className="py-2 px-4 text-left font-medium">
+                              Product
+                            </th>
+                            <th className="py-2 px-4 text-right font-medium">
+                              Quantity
+                            </th>
+                            <th className="py-2 px-4 text-right font-medium">
+                              Revenue
+                            </th>
+                            <th className="py-2 px-4 text-right font-medium">
+                              Price
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {stats.topProductsByRevenue.map((product) => (
+                            <tr key={product.id} className="border-b">
+                              <td className="py-2 px-4">{product.name}</td>
+                              <td className="py-2 px-4 text-right">
+                                {product.quantity}
+                              </td>
+                              <td className="py-2 px-4 text-right">
+                                ${product.revenue.toFixed(2)}
+                              </td>
+                              <td className="py-2 px-4 text-right">
+                                ${product.price.toFixed(2)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
