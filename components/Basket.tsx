@@ -245,7 +245,10 @@ export default function Basket({
     },
   };
 
-  if (items.length === 0 && recommendedProducts.length === 0) {
+  if (
+    (items.length === 0 || recommendedProducts.length === 0) &&
+    items.length !== 16
+  ) {
     return (
       <motion.div
         className="text-center py-12"
@@ -257,7 +260,11 @@ export default function Basket({
         <p className="text-muted-foreground mb-6">
           Add some items from the menu to get started.
         </p>
-        <Button variant="outline" onClick={() => setActiveTab("menu")} className="cursor-pointer">
+        <Button
+          variant="outline"
+          onClick={() => setActiveTab("menu")}
+          className="cursor-pointer"
+        >
           Browse Menu
         </Button>
       </motion.div>
