@@ -234,19 +234,26 @@ export default function AdminDashboard() {
             <Detail />
           </TabsContent>
           <TabsContent value="products" className="space-y-4">
-            <ProductTable
-              products={products}
-              isLoading={isLoading}
-              onEdit={handleProductSelect}
-              onDelete={handleProductDelete}
-            />
-            {selectedProduct && (
-              <ProductForm
-                product={selectedProduct}
-                onSubmit={handleProductUpdate}
-                onCancel={() => setSelectedProduct(null)}
-              />
-            )}
+            <div className="h-[50vh] md:h-[60vh] lg:h-[66vh] xl:h-[70vh] overflow-y-auto ">
+              <div className="pb-4 pr-2">
+                <ProductTable
+                  products={products}
+                  isLoading={isLoading}
+                  onEdit={handleProductSelect}
+                  onDelete={handleProductDelete}
+                />
+              </div>
+              <div className="pr-2">
+              {selectedProduct && (
+                <ProductForm
+                  product={selectedProduct}
+                  onSubmit={handleProductUpdate}
+                  onCancel={() => setSelectedProduct(null)}
+                />
+              )}
+
+              </div>
+            </div>
           </TabsContent>
           <TabsContent value="add" className="space-y-4">
             <Card>

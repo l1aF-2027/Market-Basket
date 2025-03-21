@@ -168,7 +168,7 @@ export default function ProductForm({
                 />
                 <label
                   htmlFor="file-upload"
-                  className="p-4 right-2 cursor-pointer"
+                  className="right-2 cursor-pointer"
                 >
                   <input
                     title="Upload Image"
