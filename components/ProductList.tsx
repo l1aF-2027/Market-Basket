@@ -146,7 +146,7 @@ export default function ProductList({ addToBasket }: ProductListProps) {
       </motion.div>
 
       {/* Phần scrollable - danh sách sản phẩm */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto pr-2">
         {filteredProducts.length === 0 ? (
           <motion.div
             className="text-center py-12 h-full flex items-center justify-center"
