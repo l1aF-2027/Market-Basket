@@ -170,8 +170,8 @@ export default function Detail() {
   return (
     <div className="flex flex-col">
       {/* Date Controls - Fixed height */}
-      <div className="py-4 w-full">
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
+      <div className="pb-4 w-full ">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 p-0">
           <div className="flex flex-col sm:flex-row gap-2">
             <Popover>
               <PopoverTrigger asChild>
@@ -233,7 +233,7 @@ export default function Detail() {
 
       {/* Fixed height container with scroll for dashboard content only */}
       <div className="mx-auto w-full ">
-        <div className="h-[50vh] md:h-[60vh] lg:h-[66vh] xl:h-[70vh] overflow-y-auto">
+        <div className="h-[50vh] md:h-[60vh] lg:h-[66vh] xl:h-[70vh] overflow-y-auto pr-2">
           {isLoading ? (
             <div className="h-96 flex items-center justify-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

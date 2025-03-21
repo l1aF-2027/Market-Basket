@@ -90,7 +90,7 @@ export default function ProductTable({
 
   return (
     <div className="space-y-4 ">
-      <div className="sticky top-0 bg-white z-10 flex items-center justify-between p-2">
+      <div className="sticky top-0 bg-white z-10 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Search className="h-4 w-4 text-muted-foreground" />
           <Input
