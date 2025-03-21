@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       }
     >();
 
-    // Process each purchase
+    // Process each purchase - ONLY ONCE
     purchases.forEach((purchase) => {
       const purchaseDate = purchase.createdAt.toISOString().split("T")[0];
 
@@ -114,70 +114,8 @@ export async function GET(request: Request) {
           )
         : null;
 
-    // Process each purchase
-    purchases.forEach((purchase) => {
-      purchase.purchaseDetails.forEach((detail) => {
-        const { product, quantity } = detail;
-        const revenue = product.price * quantity;
-
-        totalRevenue += revenue;
-        totalItemsSold += quantity;
-
-        // Update product statistics
-        if (!productStats.has(product.id)) {
-          productStats.set(product.id, {
-            id: product.id,
-            name: product.name,
-            category: product.category,
-            quantity: 0,
-            revenue: 0,
-            price: product.price,
-          });
-        }
-
-        const stats = productStats.get(product.id);
-        stats.quantity += quantity;
-        stats.revenue += revenue;
-      });
-    });
-
-    // Convert product stats to array and sort
+    // Convert product stats to array
     const productStatsArray = Array.from(productStats.values());
-
-    // Top products by quantity
-    const topProductsByQuantity = [...productStatsArray]
-      .sort((a, b) => b.quantity - a.quantity)
-      .slice(0, 5);
-
-    // Top products by revenue
-    const topProductsByRevenue = [...productStatsArray]
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 5);
-
-    // Product distribution for pie chart
-    const productDistribution = productStatsArray.map((product) => ({
-      name: product.name,
-      value: product.quantity,
-    }));
-
-    // Category distribution for pie chart
-    const categoryMap = new Map();
-    productStatsArray.forEach((product) => {
-      if (!categoryMap.has(product.category)) {
-        categoryMap.set(product.category, 0);
-      }
-      categoryMap.set(
-        product.category,
-        categoryMap.get(product.category) + product.quantity
-      );
-    });
-
-    const categoryDistribution = Array.from(categoryMap.entries()).map(
-      ([name, value]) => ({
-        name,
-        value,
-      })
-    );
 
     // Average order value
     const averageOrderValue =
@@ -187,8 +125,7 @@ export async function GET(request: Request) {
       totalRevenue,
       totalItemsSold,
       totalOrders: purchases.length,
-      averageOrderValue:
-        purchases.length > 0 ? totalRevenue / purchases.length : 0,
+      averageOrderValue,
       topProductsByQuantity: [...productStatsArray]
         .sort((a, b) => b.quantity - a.quantity)
         .slice(0, 5),
