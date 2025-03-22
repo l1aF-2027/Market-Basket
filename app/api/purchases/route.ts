@@ -5,60 +5,44 @@ export async function POST(request: Request) {
   try {
     console.log("Purchase API called");
 
-    // Log the raw request body for debugging
     const rawBody = await request.text();
     console.log("Raw request body:", rawBody);
-
-    // Parse the JSON body
     const body = JSON.parse(rawBody);
-    console.log("Parsed body:", body);
-
     const { purchases } = body;
-    console.log("Extracted purchases:", purchases);
 
     if (!purchases || !Array.isArray(purchases) || purchases.length === 0) {
-      console.log("Invalid purchase data:", purchases);
       return NextResponse.json(
         { error: "Invalid purchase data. Expected an array of purchases." },
         { status: 400 }
       );
     }
 
-    // 🚀 Lấy ID lớn nhất của Purchase
-    console.log("Fetching max purchase ID");
+    // Get new purchase ID
     const lastPurchase = await prisma.purchase.findFirst({
-      orderBy: { id: "desc" }, // Lấy bản ghi có ID lớn nhất
+      orderBy: { id: "desc" },
       select: { id: true },
     });
+    const newPurchaseId = lastPurchase ? lastPurchase.id + 1 : 1000;
 
-    const newPurchaseId = lastPurchase ? lastPurchase.id + 1 : 1000; // Nếu chưa có bản ghi nào, bắt đầu từ 1000
-    console.log("New purchase ID:", newPurchaseId);
-
-    // 🚀 Lấy ID lớn nhất của PurchaseDetail
-    console.log("Fetching max purchase detail ID");
+    // Get new purchase detail ID
     const lastPurchaseDetail = await prisma.purchaseDetail.findFirst({
-      orderBy: { id: "desc" }, // Lấy bản ghi có ID lớn nhất
+      orderBy: { id: "desc" },
       select: { id: true },
     });
-
     let newPurchaseDetailId = lastPurchaseDetail
       ? lastPurchaseDetail.id + 1
-      : 5000; // Nếu chưa có, bắt đầu từ 5000
-    console.log("Starting purchase detail ID from:", newPurchaseDetailId);
+      : 5000;
 
-    // 🚀 Tạo Purchase cùng với các PurchaseDetails
-    console.log("Creating purchase record");
+    // Create purchase with details
     const purchase = await prisma.purchase.create({
       data: {
-        id: newPurchaseId, 
+        id: newPurchaseId,
         purchaseDetails: {
-          create: purchases.map((p) => {
-            return {
-              id: newPurchaseDetailId++, 
-              productId: p.productId,
-              quantity: p.quantity,
-            };
-          }),
+          create: purchases.map((p) => ({
+            id: newPurchaseDetailId++,
+            productId: p.productId,
+            quantity: p.quantity,
+          })),
         },
       },
       include: {
@@ -67,6 +51,49 @@ export async function POST(request: Request) {
     });
 
     console.log("Created purchase with ID:", purchase.id);
+
+    // Prepare data for Hugging Face API
+    const productIds = purchase.purchaseDetails.map((d) => d.productId);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true },
+    });
+
+    const productMap = new Map(products.map((p) => [p.id, p.name]));
+    const cart: string[] = [];
+
+    purchase.purchaseDetails.forEach((detail) => {
+      const productName = productMap.get(detail.productId);
+      if (productName) {
+        // Add product name multiple times according to quantity
+        for (let i = 0; i < detail.quantity; i++) {
+          cart.push(productName);
+        }
+      }
+    });
+
+    // Async call to Hugging Face API (fire-and-forget)
+    (async () => {
+      try {
+        const response = await fetch(
+          "https://hnd04-market-basket-recommendation.hf.space/confirm_purchase/",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cart }),
+          }
+        );
+
+        if (!response.ok) {
+          console.error("HF API error:", await response.text());
+        } else {
+          console.log("Successfully sent cart to HF API");
+        }
+      } catch (error) {
+        console.error("Failed to send cart to HF API:", error);
+      }
+    })();
+
     return NextResponse.json(purchase, { status: 201 });
   } catch (error) {
     console.error("Error creating purchase:", error);
