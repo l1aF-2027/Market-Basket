@@ -1,8 +1,8 @@
-export const runtime = "edge"; // Tối ưu hóa trên Vercel
+export const runtime = "edge";
 
 export async function GET() {
   const siteUrl = "https://market-basket.vercel.app";
-  const pages = ["", "admin", "main"];
+  const pages = ["", "main", "admin", "signUp"];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -17,11 +17,12 @@ export async function GET() {
             </url>`
           )
           .join("")}
-    </urlset>`;
+    </urlset>`.trim();
 
   return new Response(sitemap, {
     headers: {
       "Content-Type": "application/xml",
+      "Cache-Control": "public, max-age=0, must-revalidate", // Không cache lỗi cũ
     },
   });
 }
