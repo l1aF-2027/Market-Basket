@@ -27,6 +27,15 @@ const nextConfig: NextConfig = {
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/sitemap.xml",
+        destination: "/sitemap",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 mergeConfig(nextConfig, userConfig);

@@ -1,6 +1,8 @@
+export const runtime = "edge"; // Tối ưu hóa trên Vercel
+
 export async function GET() {
   const siteUrl = "https://market-basket.vercel.app";
-  const pages = ["", "main", "admin", "signUp"]; // Các trang tĩnh
+  const pages = ["", "admin", "main"];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
