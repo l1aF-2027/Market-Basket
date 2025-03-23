@@ -35,28 +35,38 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
-          <meta property="og:title" content={metadata.openGraph.title} />
+          <meta
+            property="og:title"
+            content="Market Basket - Smart Shopping Suggestions"
+          />
           <meta
             property="og:description"
-            content={metadata.openGraph.description}
+            content="Discover products you may want to buy based on data mining techniques."
           />
-          <meta property="og:url" content={metadata.openGraph.url} />
-          <meta property="og:type" content={metadata.openGraph.type} />
+          <meta property="og:url" content="https://market-basket.vercel.app" />
+          <meta property="og:type" content="website" />
           <meta
             property="og:image"
-            content={metadata.openGraph.images[0].url}
+            content="https://storage.googleapis.com/kaggle-datasets-images/6896627/11067550/c232b880c9a1236f9c8937c3190debc9/dataset-cover.jpeg?t=2025-03-18-01-30-42"
           />
-          <meta
-            property="og:image:width"
-            content={metadata.openGraph.images[0].width.toString()}
-          />
-          <meta
-            property="og:image:height"
-            content={metadata.openGraph.images[0].height.toString()}
-          />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
           <meta
             property="og:image:alt"
-            content={metadata.openGraph.images[0].alt}
+            content="Market Basket Website Preview"
+          />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta
+            name="twitter:title"
+            content="Market Basket - Smart Shopping Suggestions"
+          />
+          <meta
+            name="twitter:description"
+            content="Discover products you may want to buy based on data mining techniques."
+          />
+          <meta
+            name="twitter:image"
+            content="https://storage.googleapis.com/kaggle-datasets-images/6896627/11067550/c232b880c9a1236f9c8937c3190debc9/dataset-cover.jpeg?t=2025-03-18-01-30-42"
           />
         </head>
         <body>{children}</body>
