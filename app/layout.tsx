@@ -35,6 +35,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
+          <meta name="robots" content="index, follow" />
           <meta
             property="og:title"
             content="Market Basket - Smart Shopping Suggestions"
