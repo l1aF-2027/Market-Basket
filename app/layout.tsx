@@ -35,6 +35,21 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "Market Basket",
+                url: "https://market-basket.vercel.app",
+                logo: "https://storage.googleapis.com/kaggle-datasets-images/6896627/11067550/c232b880c9a1236f9c8937c3190debc9/dataset-cover.jpeg?t=2025-03-18-01-30-42",
+                sameAs: [
+                  "https://github.com/l1aF-2027/Market-Basket",
+                ],
+              }),
+            }}
+          />
           <meta name="robots" content="index, follow" />
           <meta
             property="og:title"

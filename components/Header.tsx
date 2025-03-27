@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 
 export default function Header() {
   return (
-    <a href="#" className="flex items-center">
+    <a
+      href="https://github.com/l1aF-2027/Market-Basket"
+      className="flex items-center"
+    >
       <motion.div
         className="flex items-center gap-2"
         initial={{ x: "100%" }}

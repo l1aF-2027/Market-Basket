@@ -7,7 +7,13 @@ export default function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-center items-center">
-        <Header />
+        <a
+          href="https://github.com/l1aF-2027/Market-Basket"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Header />
+        </a>
       </div>
 
       <div className="mt-12 grid grid-cols-1 lg:grid-cols-10">
