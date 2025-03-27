@@ -44,6 +44,26 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+/* Mặc định cho màn hình lớn */
+.container {
+  width: 80%;
+  margin: auto;
+}
+
+/* Tablet */
+@media screen and (max-width: 1024px) {
+  .container {
+    width: 90%;
+  }
+}
+
+/* Điện thoại */
+@media screen and (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+}
 
 :root {
   --background: oklch(1 0 0);
@@ -123,33 +143,31 @@
   body {
     @apply bg-background text-foreground;
   }
-::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 3px;
     height: 0px;
     margin-left: 2px; /* Makes it appear slightly outside */
-}
+  }
 
-::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     background-color: #9ca3af;
     border-radius: 3px;
     margin-top: 10px; /* Shortens the top portion */
-}
+  }
 
-::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     background: transparent;
-}
+  }
 
-/* Container element needs relative positioning */
-.scroll-container {
+  /* Container element needs relative positioning */
+  .scroll-container {
     position: relative;
     overflow: auto;
-}
+  }
 
-.drag-overlay {
+  .drag-overlay {
     border: 2px dashed rgb(29, 29, 37);
     transition: all 0.3s ease;
     pointer-events: none;
+  }
 }
-
-}
-
