@@ -35,11 +35,13 @@ export default function Home() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 10 }}
         >
-          <img
-            src="./demo.gif"
-            alt="Web Demo"
-            className="w-full max-w-xl object-cover aspect-[16/9] "
-          />
+          <a href="/" target="_blank" rel="noopener noreferrer">
+            <img
+              src="./demo.gif"
+              alt="Web Demo"
+              className="w-full max-w-xl object-cover aspect-[16/9] "
+            />
+          </a>
         </motion.div>
       </div>
     </main>
