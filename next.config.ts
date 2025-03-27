@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
+    appDir: true,
   },
   headers: async () => [
     {
